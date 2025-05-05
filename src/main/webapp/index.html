@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日程管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .feature-card {
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-calendar-alt text-blue-600 text-2xl mr-2"></i>
+                    <span class="text-xl font-semibold text-gray-800">日程管理系统</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="login.html" class="text-gray-600 hover:text-blue-600">登录</a>
+                    <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">立即注册</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">欢迎使用日程管理系统</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">这是一个帮助您高效管理时间、提升工作效率的智能日程管理平台</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="feature-card bg-white p-6 rounded-lg shadow-md">
+                <i class="fas fa-tasks text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">任务管理</h3>
+                <p class="text-gray-600">轻松创建和管理您的日常任务，让工作更有条理</p>
+            </div>
+            <div class="feature-card bg-white p-6 rounded-lg shadow-md">
+                <i class="fas fa-bell text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">提醒功能</h3>
+                <p class="text-gray-600">及时获取重要事项提醒，不错过任何重要安排</p>
+            </div>
+            <div class="feature-card bg-white p-6 rounded-lg shadow-md">
+                <i class="fas fa-chart-line text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">数据统计</h3>
+                <p class="text-gray-600">直观展示您的时间分配，助您做出更好的规划</p>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="login.html" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:text-lg md:px-10 transition duration-300">
+                开始使用
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-400">© 2024 日程管理系统. 让生活更有序，让时间更高效。</p>
+        </div>
+    </footer>
+</body>
+</html>

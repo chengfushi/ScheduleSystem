@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的日程</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .schedule-table th, .schedule-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .schedule-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        .schedule-table tr:hover {
+            background-color: #f1f5f9;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">我的日程安排</h1>
+            <div class="space-x-4">
+                <input type="date" id="startDate" class="border rounded px-3 py-2">
+                <input type="date" id="endDate" class="border rounded px-3 py-2">
+                <button onclick="filterSchedules()" class="btn btn-primary">筛选</button>
+                <button onclick="location.href='schedule-edit.html'" class="btn btn-primary">添加日程</button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>描述</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后获取日程列表
+        document.addEventListener('DOMContentLoaded', loadSchedules);
+
+        // 加载日程列表
+        function loadSchedules() {
+            fetch('/api/schedule/list')
+                .then(response => response.json())
+                .then(data => displaySchedules(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 按时间范围筛选日程
+        function filterSchedules() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('请选择开始和结束时间');
+                return;
+            }
+
+            fetch(`/api/schedule/range?startTime=${startDate}&endTime=${endDate}`)
+                .then(response => response.json())
+                .then(data => displaySchedules(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 显示日程列表
+        function displaySchedules(schedules) {
+            const tbody = document.getElementById('scheduleList');
+            tbody.innerHTML = '';
+
+            schedules.forEach(schedule => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${schedule.title}</td>
+                    <td>${schedule.description}</td>
+                    <td>${formatDateTime(schedule.start_time)}</td>
+                    <td>${formatDateTime(schedule.end_time)}</td>
+                    <td>
+                        <button onclick="editSchedule(${schedule.schedule_id})" class="btn btn-primary mr-2">编辑</button>
+                        <button onclick="deleteSchedule(${schedule.schedule_id})" class="btn btn-danger">删除</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 格式化日期时间
+        function formatDateTime(dateTimeStr) {
+            const date = new Date(dateTimeStr);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 编辑日程
+        function editSchedule(scheduleId) {
+            location.href = `schedule-edit.html?id=${scheduleId}`;
+        }
+
+        // 删除日程
+        function deleteSchedule(scheduleId) {
+            if (confirm('确定要删除这个日程吗？')) {
+                fetch(`/api/schedule/delete?scheduleId=${scheduleId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadSchedules();
+                    } else {
+                        alert('删除失败');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+</html>

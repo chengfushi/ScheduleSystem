@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>日程管理注册界面</title>
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .registration-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            margin: 50px auto;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .registration-container:hover {
+            transform: scale(1.02);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .input-field:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .register-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .register-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+<div class="registration-container">
+    <h2 class="text-2xl font-bold mb-4 text-center">日程管理注册</h2>
+    <form id="registrationForm" action="./user/login" method="post">
+        <label for="username" class="block mb-1">用户名:</label>
+        <input type="text" name="username" id="username" class="input-field" placeholder="请输入用户名" required>
+        <label for="password" class="block mb-1">密码:</label>
+        <input type="password"  name="password" id="password" class="input-field" placeholder="请输入密码" required>
+        <button type="submit" class="register-button">注册</button>
+    </form>
+</div>
+</body>
+</html>

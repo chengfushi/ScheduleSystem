@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑日程</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
+            <h1 class="text-2xl font-bold mb-6" id="pageTitle">新建日程</h1>
+            
+            <form id="scheduleForm" onsubmit="saveSchedule(event)">
+                <input type="hidden" id="scheduleId">
+                
+                <div class="form-group">
+                    <label for="title" class="form-label">标题</label>
+                    <input type="text" id="title" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description" class="form-label">描述</label>
+                    <textarea id="description" class="form-control" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startTime" class="form-label">开始时间</label>
+                    <input type="datetime-local" id="startTime" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endTime" class="form-label">结束时间</label>
+                    <input type="datetime-local" id="endTime" class="form-control" required>
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="location.href='schedule.html'" class="btn btn-secondary">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后检查是否是编辑模式
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const scheduleId = urlParams.get('id');
+            
+            if (scheduleId) {
+                document.getElementById('pageTitle').textContent = '编辑日程';
+                document.getElementById('scheduleId').value = scheduleId;
+                loadScheduleDetails(scheduleId);
+            }
+        });
+
+        // 加载日程详情
+        function loadScheduleDetails(scheduleId) {
+            fetch(`/api/schedule/detail?scheduleId=${scheduleId}`)
+                .then(response => response.json())
+                .then(schedule => {
+                    document.getElementById('title').value = schedule.title;
+                    document.getElementById('description').value = schedule.description;
+                    document.getElementById('startTime').value = formatDateTimeForInput(schedule.start_time);
+                    document.getElementById('endTime').value = formatDateTimeForInput(schedule.end_time);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 保存日程
+        function saveSchedule(event) {
+            event.preventDefault();
+            
+            const scheduleId = document.getElementById('scheduleId').value;
+            const schedule = {
+                schedule_id: scheduleId ? parseInt(scheduleId) : null,
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                start_time: document.getElementById('startTime').value,
+                end_time: document.getElementById('endTime').value
+            };
+
+            // 验证时间
+            if (new Date(schedule.end_time) <= new Date(schedule.start_time)) {
+                alert('结束时间必须晚于开始时间');
+                return;
+            }
+
+            const url = scheduleId ? '/api/schedule/update' : '/api/schedule/create';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(schedule)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.href = 'schedule.html';
+                } else {
+                    alert('保存失败');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 格式化日期时间为input标签所需的格式
+        function formatDateTimeForInput(dateTimeStr) {
+            const date = new Date(dateTimeStr);
+            return date.toISOString().slice(0, 16);
+        }
+    </script>
+</body>
+</html>
